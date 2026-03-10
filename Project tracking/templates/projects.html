@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects - College Project Manager</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .project-filters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-options {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .filter-dropdown select {
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      background-color: white;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+    }
+    
+    .search-container {
+      display: flex;
+      margin-bottom: 15px;
+    }
+    
+    .search-container input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px 0 0 5px;
+      width: 250px;
+    }
+    
+    .search-container button {
+      padding: 8px 15px;
+      background: linear-gradient(45deg, #4A6FDC, #8E54E9);
+      color: white;
+      border: none;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+    
+    .projects-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-gap: 20px;
+    }
+    
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .project-footer {
+      margin-top: auto;
+      padding-top: 15px;
+    }
+    
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 12px;
+      border-radius: 3px;
+      margin-right: 5px;
+      background-color: #e9ecef;
+    }
+    
+    .tag-research {
+      background-color: #e3f2fd;
+      color: #0d47a1;
+    }
+    
+    .tag-presentation {
+      background-color: #f3e5f5;
+      color: #6a1b9a;
+    }
+    
+    .tag-assignment {
+      background-color: #e8f5e9;
+      color: #1b5e20;
+    }
+    
+    .tag-lab {
+      background-color: #fff3e0;
+      color: #e65100;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+    }
+    
+    .pagination button {
+      margin: 0 5px;
+      padding: 8px 15px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .pagination button.active {
+      background: linear-gradient(45deg, #4A6FDC, #8E54E9);
+      color: white;
+      border: none;
+    }
+    
+    .pagination button:hover:not(.active) {
+      background: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <header>
+    <nav>
+      <a href="/" class="logo">Project<span>Hub</span></a>
+      <ul class="nav-links">
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/projects" class="active">Projects</a></li>
+        <li><a href="/tasks">Tasks</a></li>
+        <li><a href="/calendar">Calendar</a></li>
+      </ul>
+      <div class="auth-buttons">
+        <a href="/profile" class="btn btn-secondary">
+          <i class="fas fa-user"></i> {{ username }}
+        </a>
+        <a href="/logout" class="btn btn-primary">Logout</a>
+      </div>
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Projects Content -->
+  <section class="dashboard">
+    <div class="container">
+      <div class="dashboard-header">
+        <h1>My Projects</h1>
+        <a href="/create-project" class="btn btn-primary">
+          <i class="fas fa-plus"></i> New Project
+        </a>
+      </div>
+
+      <!-- Project Filters -->
+      <div class="project-filters">
+        <div class="search-container">
+          <input type="text" placeholder="Search projects...">
+          <button><i class="fas fa-search"></i></button>
+        </div>
+        <div class="filter-options">
+          <div class="filter-dropdown">
+            <select id="status-filter">
+              <option value="all">All Statuses</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </div>
+          <div class="filter-dropdown">
+            <select id="type-filter">
+              <option value="all">All Types</option>
+              <option value="research">Research Paper</option>
+              <option value="presentation">Presentation</option>
+              <option value="assignment">Assignment</option>
+              <option value="lab">Lab Report</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="filter-dropdown">
+            <select id="sort-by">
+              <option value="deadline-asc">Deadline (Earliest)</option>
+              <option value="deadline-desc">Deadline (Latest)</option>
+              <option value="progress-asc">Progress (Low to High)</option>
+              <option value="progress-desc">Progress (High to Low)</option>
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects List -->
+      <div class="projects-wrapper">
+        <!-- Project Card -->
+        <div class="project-card">
+          <img src="/api/placeholder/400/200" alt="Research Paper">
+          <div class="project-content">
+            <h3>Research Paper</h3>
+            <p>Analysis of machine learning algorithms for predictive modeling.</p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 75%;"></div>
+            </div>
+            <div class="project-meta">
+              <span>Due: Apr 15, 2025</span>
+              <span>75% Complete</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag tag-research">Research</span>
+              <div class="task-actions" style="text-align: right; margin-top: 10px;">
+                <a href="/project/1" class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">View</a>
+                <a href="/project/1/edit" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Card -->
+        <div class="project-card">
+          <img src="/api/placeholder/400/200" alt="Group Presentation">
+          <div class="project-content">
+            <h3>Group Presentation</h3>
+            <p>Presentation on renewable energy technologies and applications.</p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 45%;"></div>
+            </div>
+            <div class="project-meta">
+              <span>Due: Apr 22, 2025</span>
+              <span>45% Complete</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag tag-presentation">Presentation</span>
+              <div class="task-actions" style="text-align: right; margin-top: 10px;">
+                <a href="/project/2" class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">View</a>
+                <a href="/project/2/edit" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Card -->
+        <div class="project-card">
+          <img src="/api/placeholder/400/200" alt="Lab Report">
+          <div class="project-content">
+            <h3>Lab Report</h3>
+            <p>Chemical analysis experiment results and discussion.</p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 90%;"></div>
+            </div>
+            <div class="project-meta">
+              <span>Due: Apr 10, 2025</span>
+              <span>90% Complete</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag tag-lab">Lab Report</span>
+              <div class="task-actions" style="text-align: right; margin-top: 10px;">
+                <a href="/project/3" class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">View</a>
+                <a href="/project/3/edit" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Card -->
+        <div class="project-card">
+          <img src="/api/placeholder/400/200" alt="Data Analysis Assignment">
+          <div class="project-content">
+            <h3>Data Analysis</h3>
+            <p>Statistical analysis of survey data and visualization of results.</p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 30%;"></div>
+            </div>
+            <div class="project-meta">
+              <span>Due: Apr 29, 2025</span>
+              <span>30% Complete</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag tag-assignment">Assignment</span>
+              <div class="task-actions" style="text-align: right; margin-top: 10px;">
+                <a href="/project/4" class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">View</a>
+                <a href="/project/4/edit" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Card -->
+        <div class="project-card">
+          <img src="/api/placeholder/400/200" alt="Literature Review">
+          <div class="project-content">
+            <h3>Literature Review</h3>
+            <p>Critical analysis of recent research papers on climate change.</p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 60%;"></div>
+            </div>
+            <div class="project-meta">
+              <span>Due: May 05, 2025</span>
+              <span>60% Complete</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag tag-research">Research</span>
+              <div class="task-actions" style="text-align: right; margin-top: 10px;">
+                <a href="/project/5" class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">View</a>
+                <a href="/project/5/edit" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Card -->
+        <div class="project-card">
+          <img src="/api/placeholder/400/200" alt="Biology Lab Report">
+          <div class="project-content">
+            <h3>Biology Lab Report</h3>
+            <p>Microscopic examination of cell structures and documentation.</p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 85%;"></div>
+            </div>
+            <div class="project-meta">
+              <span>Due: Apr 18, 2025</span>
+              <span>85% Complete</span>
+            </div>
+            <div class="project-footer">
+              <span class="tag tag-lab">Lab Report</span>
+              <div class="task-actions" style="text-align: right; margin-top: 10px;">
+                <a href="/project/6" class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">View</a>
+                <a href="/project/6/edit" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">Edit</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <button><i class="fas fa-chevron-left"></i></button>
+        <button class="active">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Filter projects functionality
+      const statusFilter = document.getElementById('status-filter');
+      const typeFilter = document.getElementById('type-filter');
+      const sortBy = document.getElementById('sort-by');
+      const searchInput = document.querySelector('.search-container input');
+      const searchButton = document.querySelector('.search-container button');
+      
+      // Demo filter function - in a real app, this would filter the projects
+      function filterProjects() {
+        // This is just a demo function
+        console.log('Filtering projects with:');
+        console.log('Status:', statusFilter.value);
+        console.log('Type:', typeFilter.value);
+        console.log('Sort by:', sortBy.value);
+        console.log('Search term:', searchInput.value);
+        
+        // For a real implementation, you would:
+        // 1. Send a request to your server with these filter parameters
+        // 2. Receive filtered projects
+        // 3. Update the DOM with the new filtered projects
+      }
+      
+      // Add event listeners
+      statusFilter.addEventListener('change', filterProjects);
+      typeFilter.addEventListener('change', filterProjects);
+      sortBy.addEventListener('change', filterProjects);
+      searchButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        filterProjects();
+      });
+      
+      // Pagination demo
+      const paginationButtons = document.querySelectorAll('.pagination button');
+      paginationButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Remove active class from all buttons
+          paginationButtons.forEach(btn => btn.classList.remove('active'));
+          // Add active class to clicked button
+          if (!this.classList.contains('fa-chevron-left') && 
+              !this.classList.contains('fa-chevron-right')) {
+            this.classList.add('active');
+          }
+          
+          // In a real app, you would load the corresponding page of projects here
+          console.log('Loading page:', this.textContent);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

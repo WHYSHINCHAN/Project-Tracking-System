@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - College Project Manager</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <!-- Header Section -->
+  <header>
+    <nav>
+      <a href="/" class="logo">Project<span>Hub</span></a>
+      <ul class="nav-links">
+        <li><a href="/dashboard" class="active">Dashboard</a></li>
+        <li><a href="/projects">Projects</a></li>
+        <li><a href="/tasks">Tasks</a></li>
+        <li><a href="/calendar">Calendar</a></li>
+      </ul>
+      <div class="auth-buttons">
+        <a href="/profile" class="btn btn-secondary">
+          <i class="fas fa-user"></i> {{ username }}
+        </a>
+        <a href="/logout" class="btn btn-primary">Logout</a>
+      </div>
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Dashboard Content -->
+  <section class="dashboard">
+    <div class="container">
+      <div class="dashboard-header">
+        <h1>Dashboard</h1>
+        <a href="/create-project" class="btn btn-primary" id="new-project-btn">
+          <i class="fas fa-plus"></i> New Project
+        </a>
+      </div>
+
+      <!-- Motivational Quote -->
+      <div class="quote-container fade-in-element">
+        <p class="quote-text">"The secret of getting ahead is getting started."</p>
+        <p class="quote-author">— Mark Twain</p>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="dashboard-cards">
+        <div class="dashboard-card fade-in-element">
+          <h3><i class="fas fa-tasks"></i> Active Projects</h3>
+          <h2>5</h2>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 70%;"></div>
+          </div>
+          <div class="meta">
+            <span class="percentage">70% Overall completion</span>
+          </div>
+        </div>
+        <div class="dashboard-card fade-in-element">
+          <h3><i class="fas fa-check-circle"></i> Completed Tasks</h3>
+          <h2>12 / 20</h2>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 60%;"></div>
+          </div>
+          <div class="meta">
+            <span class="percentage">60% Completion rate</span>
+          </div>
+        </div>
+        <div class="dashboard-card fade-in-element">
+          <h3><i class="fas fa-clock"></i> Upcoming Deadlines</h3>
+          <h2>3</h2>
+          <p>Next: Research Paper (2 days)</p>
+        </div>
+      </div>
+
+      <!-- Recent Projects -->
+      <h2 class="section-title">Recent Projects</h2>
+      <div class="projects-grid">
+        <div class="project-card fade-in-element">
+          <img src="{{ url_for('static', filename='img/project1.jpg') }}" alt="Research Project">
+          <div class="project-content">
+            <h3>Research Paper</h3>
+            <p>Analysis of machine learning algorithms for predictive modeling.</p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 75%;"></div>
+            </div>
+            <div class="project-meta">
+              <span>Due: Apr 15, 2025</span>
+              <span>75% Complete</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-card fade-in-element">
+          <img src="{{ url_for('static', filename='img/project2.jpg') }}" alt="Group Presentation">
+          <div class="project-content">
+            <h3>Group Presentation</h3>
+            <p>Presentation on renewable energy technologies and applications.</p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 45%;"></div>
+            </div>
+            <div class="project-meta">
+              <span>Due: Apr 22, 2025</span>
+              <span>45% Complete</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-card fade-in-element">
+          <img src="{{ url_for('static', filename='img/project3.jpg') }}" alt="Lab Report">
+          <div class="project-content">
+            <h3>Lab Report</h3>
+            <p>Chemical analysis experiment results and discussion.</p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 90%;"></div>
+            </div>
+            <div class="project-meta">
+              <span>Due: Apr 10, 2025</span>
+              <span>90% Complete</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Tasks -->
+      <h2 class="section-title">Upcoming Tasks</h2>
+      <div class="tasks-list fade-in-element">
+        <div class="tasks-header">
+          <form id="new-task-form" class="new-task-form">
+            <input type="text" id="new-task-input" placeholder="Add a new task...">
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+        </div>
+        <div class="tasks-body">
+          <div class="task-item">
+            <div class="task-info">
+              <h4>Complete literature review</h4>
+              <p>Due: Apr 10, 2025</p>
+            </div>
+            <span class="task-status status-in-progress">In Progress</span>
+            <div class="task-actions">
+              <button><i class="fas fa-edit"></i></button>
+              <button><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="task-item">
+            <div class="task-info">
+              <h4>Prepare presentation slides</h4>
+              <p>Due: Apr 12, 2025</p>
+            </div>
+            <span class="task-status status-pending">Pending</span>
+            <div class="task-actions">
+              <button><i class="fas fa-edit"></i></button>
+              <button><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="task-item">
+            <div class="task-info">
+              <h4>Submit first draft</h4>
+              <p>Due: Apr 08, 2025</p>
+            </div>
+            <span class="task-status status-completed">Completed</span>
+            <div class="task-actions">
+              <button><i class="fas fa-edit"></i></button>
+              <button><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
